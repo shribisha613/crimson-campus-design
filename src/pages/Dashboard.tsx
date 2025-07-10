@@ -128,7 +128,7 @@ const Dashboard = () => {
                 <Link to="/rooms" className="block">
                   <Button variant="outline" className="w-full justify-start">
                     <MapPin className="w-4 h-4 mr-2" />
-                    Manage Rooms
+                    Manage Teachers
                   </Button>
                 </Link>
                 <Link to="/reports" className="block">
