@@ -5,10 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Users, Search, Upload, Download, Filter, UserPlus, Edit, Trash2 } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 const Students = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [isResitStudents, setIsResitStudents] = useState(false);
+  const { toast } = useToast();
+
+  const courses = ['BIT', 'BBA', 'MBA', 'BSc', 'MSc'];
 
   const students = [
     { id: 1, name: 'Rahul Sharma', rollNo: 'CS001', program: 'B.Tech', year: '2', section: 'A', email: 'rahul.sharma@college.edu', phone: '+91 9876543210', eligible: true },
@@ -27,6 +36,30 @@ const Students = () => {
   const eligibleCount = students.filter(s => s.eligible).length;
   const ineligibleCount = students.filter(s => !s.eligible).length;
 
+  const handleCourseToggle = (course: string) => {
+    setSelectedCourses(prev => 
+      prev.includes(course) 
+        ? prev.filter(c => c !== course)
+        : [...prev, course]
+    );
+  };
+
+  const handleImport = () => {
+    console.log('Importing students:', {
+      courses: selectedCourses,
+      isResit: isResitStudents
+    });
+    
+    toast({
+      title: "Import Started",
+      description: `Student import has been initiated for ${selectedCourses.join(', ')} ${isResitStudents ? '(Resit Students)' : '(Regular Students)'}.`,
+    });
+    
+    setImportDialogOpen(false);
+    setSelectedCourses([]);
+    setIsResitStudents(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -38,10 +71,66 @@ const Students = () => {
               <p className="text-gray-600 mt-1">Manage student records and eligibility</p>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline">
-                <Upload className="w-4 h-4 mr-2" />
-                Import Students
-              </Button>
+              <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Import Students
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Import Students</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6 pt-4">
+                    {/* Course Selection */}
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-3 block">Select Courses:</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {courses.map(course => (
+                          <div key={course} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={course}
+                              checked={selectedCourses.includes(course)}
+                              onCheckedChange={() => handleCourseToggle(course)}
+                            />
+                            <label htmlFor={course} className="text-sm font-medium">
+                              {course}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Student Type */}
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-3 block">Student Type:</label>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="resit"
+                          checked={isResitStudents}
+                          onCheckedChange={(checked) => setIsResitStudents(checked as boolean)}
+                        />
+                        <label htmlFor="resit" className="text-sm font-medium">
+                          Resit Students
+                        </label>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Check this if importing resit/supplementary exam students
+                      </p>
+                    </div>
+
+                    <Button 
+                      onClick={handleImport}
+                      disabled={selectedCourses.length === 0}
+                      className="w-full bg-red-800 hover:bg-red-900"
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Import Students
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button className="bg-red-800 hover:bg-red-900">
                 <UserPlus className="w-4 h-4 mr-2" />
                 Add Student

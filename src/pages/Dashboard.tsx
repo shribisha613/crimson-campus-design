@@ -1,16 +1,17 @@
 
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Calendar, Users, MapPin, FileText, TrendingUp, Clock } from 'lucide-react';
+import { Calendar, Users, UserCheck, FileText, Clock } from 'lucide-react';
 
 const Dashboard = () => {
   const stats = [
     { title: 'Active Exam Plans', value: '12', icon: Calendar, color: 'bg-blue-50 text-blue-700' },
     { title: 'Total Students', value: '1,247', icon: Users, color: 'bg-green-50 text-green-700' },
-    { title: 'Available Rooms', value: '28', icon: MapPin, color: 'bg-purple-50 text-purple-700' },
+    { title: 'Invigilators', value: '28', icon: UserCheck, color: 'bg-purple-50 text-purple-700' },
     { title: 'Completed Exams', value: '156', icon: FileText, color: 'bg-orange-50 text-orange-700' }
   ];
 
@@ -69,7 +70,7 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Recent Exam Plans</CardTitle>
-                  <Link to="/exam-plans">
+                  <Link to="/draft-plans">
                     <Button variant="outline" size="sm">View All</Button>
                   </Link>
                 </div>
@@ -125,16 +126,10 @@ const Dashboard = () => {
                     Manage Students
                   </Button>
                 </Link>
-                <Link to="/rooms" className="block">
+                <Link to="/invigilators" className="block">
                   <Button variant="outline" className="w-full justify-start">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Manage Teachers
-                  </Button>
-                </Link>
-                <Link to="/reports" className="block">
-                  <Button variant="outline" className="w-full justify-start">
-                    <TrendingUp className="w-4 h-4 mr-2" />
-                    View Reports
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    Manage Invigilators
                   </Button>
                 </Link>
               </CardContent>
