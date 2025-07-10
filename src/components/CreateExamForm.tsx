@@ -14,6 +14,12 @@ interface CreateExamFormProps {
   onPrevious: () => void;
 }
 
+interface FormErrors {
+  name?: string;
+  date?: string;
+  time?: string;
+}
+
 const CreateExamForm: React.FC<CreateExamFormProps> = ({ data, onUpdate, onNext }) => {
   const [formData, setFormData] = useState({
     name: data.name || '',
@@ -22,10 +28,10 @@ const CreateExamForm: React.FC<CreateExamFormProps> = ({ data, onUpdate, onNext 
     description: data.description || ''
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = 'Exam name is required';
     if (!formData.date) newErrors.date = 'Exam date is required';
     if (!formData.time) newErrors.time = 'Exam time is required';
@@ -44,7 +50,7 @@ const CreateExamForm: React.FC<CreateExamFormProps> = ({ data, onUpdate, onNext 
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field as keyof typeof errors]) {
+    if (errors[field as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
