@@ -3,12 +3,9 @@ import React from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { 
   LayoutDashboard, 
-  FileText, 
+  Folder,
   Users, 
-  UserCheck, 
-  MapPin, 
-  BarChart3,
-  Folder
+  UserCheck
 } from 'lucide-react';
 
 const Navigation = () => {
@@ -16,12 +13,9 @@ const Navigation = () => {
   
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/exam-plans', label: 'Exam Plans', icon: FileText },
     { path: '/draft-plans', label: 'Draft Plans', icon: Folder },
     { path: '/students', label: 'Student Management', icon: Users },
     { path: '/invigilators', label: 'Manage Invigilators', icon: UserCheck },
-    { path: '/rooms', label: 'Rooms', icon: MapPin },
-    { path: '/reports', label: 'Reports', icon: BarChart3 },
   ];
 
   return (

@@ -6,11 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Upload, Search, Filter, Edit, Trash2, UserCheck, Users, Download } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 const ManageInvigilators = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('academic');
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const academicStaff = [
     { id: 1, name: 'Dr. Smith Johnson', department: 'Mathematics', experience: 5, status: 'Available' },
@@ -34,6 +38,15 @@ const ManageInvigilators = () => {
     staff.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleImport = (type: 'academic' | 'non-academic') => {
+    console.log(`Importing ${type} staff list`);
+    toast({
+      title: "Import Started",
+      description: `${type === 'academic' ? 'Academic' : 'Non-Academic'} staff import has been initiated.`,
+    });
+    setImportDialogOpen(false);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -48,38 +61,45 @@ const ManageInvigilators = () => {
           <CardTitle>Import Invigilators</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="academic">Academic Staff</TabsTrigger>
-              <TabsTrigger value="non-academic">Non-Academic Staff</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="academic" className="mt-4">
-              <div className="flex gap-4">
+          <div className="flex gap-4">
+            <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+              <DialogTrigger asChild>
                 <Button className="bg-red-800 hover:bg-red-900">
                   <Upload className="w-4 h-4 mr-2" />
-                  Import Academic Staff
+                  Import Invigilators
                 </Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Template
-                </Button>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="non-academic" className="mt-4">
-              <div className="flex gap-4">
-                <Button className="bg-red-800 hover:bg-red-900">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Import Non-Academic Staff
-                </Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Template
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Select Staff Type</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <p className="text-sm text-gray-600">Choose the type of staff you want to import:</p>
+                  <div className="flex flex-col gap-3">
+                    <Button 
+                      onClick={() => handleImport('academic')}
+                      className="bg-red-800 hover:bg-red-900 justify-start"
+                    >
+                      <Users className="w-4 h-4 mr-2" />
+                      Academic Staff
+                    </Button>
+                    <Button 
+                      onClick={() => handleImport('non-academic')}
+                      variant="outline"
+                      className="justify-start"
+                    >
+                      <UserCheck className="w-4 h-4 mr-2" />
+                      Non-Academic Staff
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+            <Button variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Download Template
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -110,49 +130,93 @@ const ManageInvigilators = () => {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <UserCheck className="w-5 h-5" />
-              {activeTab === 'academic' ? 'Academic Staff' : 'Non-Academic Staff'}
+              Invigilators
             </CardTitle>
-            <Badge variant="outline">
-              {filteredData.length} {activeTab === 'academic' ? 'Academic' : 'Non-Academic'} Staff
-            </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Experience</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.map((staff) => (
-                <TableRow key={staff.id}>
-                  <TableCell className="font-medium">{staff.name}</TableCell>
-                  <TableCell>{staff.department}</TableCell>
-                  <TableCell>{staff.experience} years</TableCell>
-                  <TableCell>
-                    <Badge className={staff.status === 'Available' ? 'bg-green-600' : 'bg-red-600'}>
-                      {staff.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="academic">Academic Staff ({academicStaff.length})</TabsTrigger>
+              <TabsTrigger value="non-academic">Non-Academic Staff ({nonAcademicStaff.length})</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="academic">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Experience</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredData.map((staff) => (
+                    <TableRow key={staff.id}>
+                      <TableCell className="font-medium">{staff.name}</TableCell>
+                      <TableCell>{staff.department}</TableCell>
+                      <TableCell>{staff.experience} years</TableCell>
+                      <TableCell>
+                        <Badge className={staff.status === 'Available' ? 'bg-green-600' : 'bg-red-600'}>
+                          {staff.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+            
+            <TabsContent value="non-academic">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Experience</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredData.map((staff) => (
+                    <TableRow key={staff.id}>
+                      <TableCell className="font-medium">{staff.name}</TableCell>
+                      <TableCell>{staff.department}</TableCell>
+                      <TableCell>{staff.experience} years</TableCell>
+                      <TableCell>
+                        <Badge className={staff.status === 'Available' ? 'bg-green-600' : 'bg-red-600'}>
+                          {staff.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
