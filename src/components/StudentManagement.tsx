@@ -5,10 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Users, Upload, Download, Search, ArrowRight, ArrowLeft, UserMinus } from 'lucide-react';
 
 interface StudentManagementProps {
@@ -21,25 +18,19 @@ interface StudentManagementProps {
 const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, onNext, onPrevious }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>(['BIT']);
-  const [studentType, setStudentType] = useState<'regular' | 'resit'>('regular');
-  const [activeTab, setActiveTab] = useState('regular');
 
   const courses = ['BIT', 'BBA', 'MBA', 'BSc', 'MSc'];
 
-  const regularStudents = [
+  const students = [
     { id: 1, name: 'Rahul Sharma', rollNo: 'BIT001', course: 'BIT', section: 'A', eligible: true },
     { id: 2, name: 'Priya Patel', rollNo: 'BBA002', course: 'BBA', section: 'A', eligible: true },
     { id: 3, name: 'Amit Kumar', rollNo: 'BIT003', course: 'BIT', section: 'B', eligible: false },
     { id: 4, name: 'Sneha Gupta', rollNo: 'MBA004', course: 'MBA', section: 'B', eligible: true },
-  ];
-
-  const resitStudents = [
     { id: 5, name: 'Vikram Singh', rollNo: 'BIT005', course: 'BIT', section: 'C', eligible: true },
     { id: 6, name: 'Pooja Verma', rollNo: 'BBA006', course: 'BBA', section: 'C', eligible: false },
   ];
 
   const getCurrentStudents = () => {
-    const students = activeTab === 'regular' ? regularStudents : resitStudents;
     return students.filter(student => 
       selectedCourses.length === 0 || selectedCourses.includes(student.course)
     );
@@ -62,8 +53,7 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, o
     const eligibleStudents = getCurrentStudents().filter(s => s.eligible);
     onUpdate({ 
       ...data, 
-      students: eligibleStudents,
-      studentType: studentType
+      students: eligibleStudents
     });
     onNext();
   };
@@ -90,27 +80,6 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, o
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Student Type Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Select Student Type</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup value={studentType} onValueChange={(value: 'regular' | 'resit') => setStudentType(value)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="regular" id="regular" />
-                  <Label htmlFor="regular">Regular Students</Label>
-                  <Badge variant="outline" className="ml-2">Standard Exam</Badge>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="resit" id="resit" />
-                  <Label htmlFor="resit">Resit Students</Label>
-                  <Badge variant="outline" className="ml-2">Supplementary Exam</Badge>
-                </div>
-              </RadioGroup>
-            </CardContent>
-          </Card>
-
           {/* Course Selection */}
           <Card>
             <CardHeader>
@@ -134,123 +103,61 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, o
             </CardContent>
           </Card>
 
-          {/* Student Type Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="regular">Regular Students</TabsTrigger>
-              <TabsTrigger value="resit">Resit Students</TabsTrigger>
-            </TabsList>
+          {/* Student List */}
+          <div className="space-y-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search students..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
 
-            <TabsContent value="regular" className="space-y-4">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search regular students..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* Student List */}
-              <Card>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Roll Number</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Section</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
+            {/* Student List */}
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Roll Number</TableHead>
+                      <TableHead>Course</TableHead>
+                      <TableHead>Section</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredStudents.map((student) => (
+                      <TableRow key={student.id}>
+                        <TableCell className="font-medium">{student.name}</TableCell>
+                        <TableCell>{student.rollNo}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{student.course}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">Section {student.section}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
+                            {student.eligible ? 'Eligible' : 'Ineligible'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            <UserMinus className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredStudents.map((student) => (
-                        <TableRow key={student.id}>
-                          <TableCell className="font-medium">{student.name}</TableCell>
-                          <TableCell>{student.rollNo}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{student.course}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">Section {student.section}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
-                              {student.eligible ? 'Eligible' : 'Ineligible'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Button variant="outline" size="sm">
-                              <UserMinus className="w-4 h-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="resit" className="space-y-4">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search resit students..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* Student List */}
-              <Card>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Roll Number</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Section</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredStudents.map((student) => (
-                        <TableRow key={student.id}>
-                          <TableCell className="font-medium">{student.name}</TableCell>
-                          <TableCell>{student.rollNo}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{student.course}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">Section {student.section}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
-                              {student.eligible ? 'Eligible' : 'Ineligible'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Button variant="outline" size="sm">
-                              <UserMinus className="w-4 h-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
 
           <div className="flex justify-between pt-4">
             <Button variant="outline" onClick={onPrevious}>
