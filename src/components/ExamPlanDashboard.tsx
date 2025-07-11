@@ -147,27 +147,6 @@ const ExamPlanDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <FileText className="w-4 h-4 mr-2" />
-                  Save as Draft
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Schedule for Later
-                </Button>
-                <Button className="w-full justify-start bg-red-800 hover:bg-red-900">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Finalize Plan
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
