@@ -2,12 +2,9 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Link, useLocation } from "react-router-dom";
-import { Plus, User, LogOut } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
 
 const Header = () => {
-  const location = useLocation();
-
   return (
     <div className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,13 +19,6 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-4">
-            <Link to="/create-exam">
-              <Button className="bg-red-800 hover:bg-red-900">
-                <Plus className="w-4 h-4 mr-2" />
-                Create New Exam Plan
-              </Button>
-            </Link>
-
             {/* Admin Profile */}
             <div className="flex items-center gap-2">
               <Avatar className="w-8 h-8">
