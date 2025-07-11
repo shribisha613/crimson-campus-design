@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Users, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Users, ArrowRight, ArrowLeft, AlertTriangle } from 'lucide-react';
 
 interface SectionSelectorProps {
   data: any;
@@ -16,13 +17,22 @@ interface SectionSelectorProps {
 const SectionSelector: React.FC<SectionSelectorProps> = ({ data, onUpdate, onNext, onPrevious }) => {
   const [selectedSections, setSelectedSections] = useState(data.sections || []);
 
+  // Mock room capacity - in real app this would come from backend
+  const maxRoomCapacity = 500; // Total capacity of all available rooms
+
   const sections = [
-    { id: 'A', name: 'Section A', students: 45, subject: 'Computer Science' },
-    { id: 'B', name: 'Section B', students: 42, subject: 'Information Technology' },
-    { id: 'C', name: 'Section C', students: 38, subject: 'Electronics' },
-    { id: 'D', name: 'Section D', students: 40, subject: 'Mechanical' },
-    { id: 'E', name: 'Section E', students: 35, subject: 'Civil' },
-    { id: 'F', name: 'Section F', students: 33, subject: 'Electrical' }
+    { id: 'C1', name: 'C1', students: 45 },
+    { id: 'C2', name: 'C2', students: 42 },
+    { id: 'C3', name: 'C3', students: 38 },
+    { id: 'C4', name: 'C4', students: 40 },
+    { id: 'C5', name: 'C5', students: 35 },
+    { id: 'C6', name: 'C6', students: 33 },
+    { id: 'C7', name: 'C7', students: 41 },
+    { id: 'C8', name: 'C8', students: 39 },
+    { id: 'C9', name: 'C9', students: 37 },
+    { id: 'C10', name: 'C10', students: 44 },
+    { id: 'C11', name: 'C11', students: 36 },
+    { id: 'C12', name: 'C12', students: 43 }
   ];
 
   const handleSectionToggle = (sectionId: string) => {
@@ -55,6 +65,8 @@ const SectionSelector: React.FC<SectionSelectorProps> = ({ data, onUpdate, onNex
     .filter(s => selectedSections.includes(s.id))
     .reduce((sum, s) => sum + s.students, 0);
 
+  const exceedsCapacity = totalStudents > maxRoomCapacity;
+
   return (
     <div className="space-y-6">
       <Card>
@@ -75,7 +87,7 @@ const SectionSelector: React.FC<SectionSelectorProps> = ({ data, onUpdate, onNex
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {sections.map((section) => (
               <Card
                 key={section.id}
@@ -97,7 +109,6 @@ const SectionSelector: React.FC<SectionSelectorProps> = ({ data, onUpdate, onNex
                         <h4 className="font-semibold">{section.name}</h4>
                         <Badge variant="outline">{section.students} students</Badge>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">{section.subject}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -105,7 +116,36 @@ const SectionSelector: React.FC<SectionSelectorProps> = ({ data, onUpdate, onNex
             ))}
           </div>
 
-          {selectedSections.length > 0 && (
+          {/* Room Capacity Information */}
+          <Card className="bg-gray-50 border-gray-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold text-gray-900">Room Capacity</h4>
+                  <p className="text-sm text-gray-700">
+                    Maximum student capacity across all available rooms
+                  </p>
+                </div>
+                <Badge variant="outline" className="text-gray-700">
+                  {maxRoomCapacity} Students
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Capacity Exceeded Error */}
+          {exceedsCapacity && (
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                <strong>Capacity Exceeded:</strong> The selected sections have {totalStudents} students, 
+                which exceeds the maximum room capacity of {maxRoomCapacity} students. 
+                Please deselect some sections to proceed.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {selectedSections.length > 0 && !exceedsCapacity && (
             <Card className="bg-blue-50 border-blue-200">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -130,7 +170,7 @@ const SectionSelector: React.FC<SectionSelectorProps> = ({ data, onUpdate, onNex
             </Button>
             <Button 
               onClick={handleContinue}
-              disabled={selectedSections.length === 0}
+              disabled={selectedSections.length === 0 || exceedsCapacity}
               className="bg-red-800 hover:bg-red-900"
             >
               Continue to Student Management

@@ -22,19 +22,14 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const programs = [
-    { id: 'btech', name: 'B.Tech', description: 'Bachelor of Technology' },
-    { id: 'mtech', name: 'M.Tech', description: 'Master of Technology' },
-    { id: 'bsc', name: 'B.Sc', description: 'Bachelor of Science' },
-    { id: 'msc', name: 'M.Sc', description: 'Master of Science' },
-    { id: 'ba', name: 'B.A', description: 'Bachelor of Arts' },
-    { id: 'ma', name: 'M.A', description: 'Master of Arts' }
+    { id: 'bit', name: 'BIT', description: 'Bachelor of Information Technology' },
+    { id: 'bba', name: 'BBA', description: 'Bachelor of Business Administration' }
   ];
 
   const years = [
-    { id: '1', name: 'First Year', students: 250 },
-    { id: '2', name: 'Second Year', students: 230 },
-    { id: '3', name: 'Third Year', students: 210 },
-    { id: '4', name: 'Fourth Year', students: 195 }
+    { id: '1', name: 'Year 1', students: 250 },
+    { id: '2', name: 'Year 2', students: 230 },
+    { id: '3', name: 'Year 3', students: 210 }
   ];
 
   const handleContinue = () => {
