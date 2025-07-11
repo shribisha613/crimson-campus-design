@@ -180,6 +180,14 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
                         <div className="flex items-center justify-center gap-2 text-green-600">
                           <FileText className="w-4 h-4" />
                           <span className="text-sm">{uploadedFile.name}</span>
+                          <button
+                            type="button"
+                            aria-label="Remove file"
+                            onClick={() => setUploadedFile(null)}
+                            className="ml-2 text-red-500 hover:text-red-700 text-lg font-bold focus:outline-none"
+                          >
+                            &times;
+                          </button>
                         </div>
                       )}
                     </div>

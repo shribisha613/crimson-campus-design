@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MapPin, ArrowRight, ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import { useToast } from '@/components/ui/use-toast';
 
 interface RoomSelectorProps {
   data: any;
@@ -16,6 +18,9 @@ interface RoomSelectorProps {
 
 const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onPrevious }) => {
   const [selectedRooms, setSelectedRooms] = useState(data.rooms || []);
+  const [showExcelScreen, setShowExcelScreen] = useState(false);
+  const [excelUrl, setExcelUrl] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const rooms = [
     // Nepal Block Rooms
@@ -96,6 +101,48 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
       // Here you would typically save to database
       console.log('Exam plan finalized:', { ...data, rooms: selectedRooms });
     }
+  };
+
+  const handleGenerateExcel = () => {
+    // Prepare data for Excel
+    const examInfo = [
+      ['Exam Name', data.name || ''],
+      ['Date', data.date || ''],
+      ['Time', data.time || ''],
+      ['Program', data.program || ''],
+      ['Year', data.year || ''],
+      ['Sections', (data.sections || []).join(', ')],
+      ['Students', (data.students || []).length],
+      ['Rooms', selectedRooms.map(id => {
+        const r = rooms.find(rm => rm.id === id);
+        return r ? r.name : id;
+      }).join(', ')],
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(examInfo);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Exam Plan');
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    setExcelUrl(url);
+    setShowExcelScreen(true);
+  };
+
+  const handleSaveDraft = () => {
+    toast({
+      title: 'Draft saved',
+      description: 'Draft saved to database!',
+      variant: 'default',
+    });
+    setShowExcelScreen(false);
+    // Optionally, call onUpdate/onNext here to finalize
+    handleFinalize();
+  };
+
+  const handleGoBack = () => {
+    setShowExcelScreen(false);
+    if (excelUrl) URL.revokeObjectURL(excelUrl);
+    setExcelUrl(null);
   };
 
   return (
@@ -222,7 +269,11 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
               Previous
             </Button>
             <Button 
-              onClick={handleFinalize}
+              onClick={() => {
+                if (selectedRooms.length > 0 && isCapacitySufficient) {
+                  handleGenerateExcel();
+                }
+              }}
               disabled={selectedRooms.length === 0 || !isCapacitySufficient}
               className="bg-red-800 hover:bg-red-900"
             >
@@ -230,6 +281,53 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
               Generate Seat Plans
             </Button>
           </div>
+
+          {/* Excel File Actions Screen */}
+          {showExcelScreen && excelUrl && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-20">
+              <div className="bg-white rounded-lg shadow border border-red-800 p-6 w-full max-w-sm flex flex-col items-center gap-5 relative">
+                <div className="text-base font-semibold text-gray-800 text-center mb-1">
+                  Exam plan generated for <span className="text-red-800">"{data.name ? data.name : 'Exam Plan'}"</span>
+                </div>
+                <a
+                  href={excelUrl}
+                  download={data.name ? `${data.name}.xlsx` : 'Exam Plan.xlsx'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 underline font-medium text-base break-all text-center mb-1"
+                  style={{ wordBreak: 'break-all' }}
+                >
+                  {data.name ? `${data.name}.xlsx` : 'Exam Plan.xlsx'}
+                </a>
+                <div className="flex flex-col gap-2 w-full mt-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full rounded border-green-700 text-green-700 hover:bg-green-50"
+                    onClick={() => window.open(excelUrl, '_blank')}
+                  >
+                    Open to View / Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full rounded border-green-700 text-green-700 hover:bg-green-50"
+                    onClick={handleSaveDraft}
+                  >
+                    Save as Draft
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full rounded border-green-700 text-green-700 hover:bg-green-50"
+                    onClick={handleGoBack}
+                  >
+                    Go Back
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

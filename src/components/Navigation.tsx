@@ -47,12 +47,14 @@ const Navigation = () => {
             </div>
           </div>
           
-          <Link to="/create-exam">
-            <button className="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded flex items-center gap-2 text-sm font-medium">
-              <Plus className="w-4 h-4" />
-              Create New Exam Plan
-            </button>
-          </Link>
+          {!location.pathname.startsWith('/create-exam') && (
+            <Link to="/create-exam">
+              <button className="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded flex items-center gap-2 text-sm font-medium">
+                <Plus className="w-4 h-4" />
+                Create New Exam Plan
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
