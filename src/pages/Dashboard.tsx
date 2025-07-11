@@ -1,11 +1,10 @@
 
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Calendar, Users, UserCheck, FileText, Clock } from 'lucide-react';
+import { Calendar, Users, UserCheck, FileText, Clock, Folder } from 'lucide-react';
 
 const Dashboard = () => {
   const stats = [
@@ -27,17 +26,11 @@ const Dashboard = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">RTE Dashboard</h1>
               <p className="text-gray-600 mt-1">Department of Education - Exam Management</p>
             </div>
-            <Link to="/create-exam">
-              <Button className="bg-red-800 hover:bg-red-900">
-                <Calendar className="w-4 h-4 mr-2" />
-                Create New Exam Plan
-              </Button>
-            </Link>
           </div>
         </div>
       </div>
@@ -118,6 +111,12 @@ const Dashboard = () => {
                   <Button className="w-full justify-start bg-red-800 hover:bg-red-900">
                     <Calendar className="w-4 h-4 mr-2" />
                     Create Exam Plan
+                  </Button>
+                </Link>
+                <Link to="/draft-plans" className="block">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Folder className="w-4 h-4 mr-2" />
+                    View Draft Plans
                   </Button>
                 </Link>
                 <Link to="/students" className="block">

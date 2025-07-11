@@ -2,14 +2,8 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
 import { Link, useLocation } from "react-router-dom";
-import { Plus, User, LogOut, ChevronDown } from 'lucide-react';
+import { Plus, User, LogOut } from 'lucide-react';
 
 const Header = () => {
   const location = useLocation();
@@ -35,30 +29,21 @@ const Header = () => {
               </Button>
             </Link>
 
-            {/* Profile Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2">
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-red-100 text-red-800">
-                      <User className="w-4 h-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="hidden md:block">Admin</span>
-                  <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white">
-                <DropdownMenuItem>
-                  <User className="w-4 h-4 mr-2" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Admin Profile */}
+            <div className="flex items-center gap-2">
+              <Avatar className="w-8 h-8">
+                <AvatarFallback className="bg-red-100 text-red-800">
+                  <User className="w-4 h-4" />
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden md:block text-gray-700">Admin</span>
+            </div>
+
+            {/* Logout Button */}
+            <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-50">
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
       </div>
