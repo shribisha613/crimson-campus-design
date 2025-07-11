@@ -2,8 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
-import { Plus, User, LogOut } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
 
 const Header = () => {
   return (
@@ -18,16 +17,8 @@ const Header = () => {
             <h1 className="text-xl font-bold text-gray-900">RTE Exam Seat Allocation System</h1>
           </div>
 
-          {/* Actions */}
+          {/* Admin Profile and Logout */}
           <div className="flex items-center gap-4">
-            {/* Create New Exam Plan Button */}
-            <Link to="/create-exam">
-              <Button className="bg-red-800 hover:bg-red-900">
-                <Plus className="w-4 h-4 mr-2" />
-                Create New Exam Plan
-              </Button>
-            </Link>
-
             {/* Admin Profile */}
             <div className="flex items-center gap-2">
               <Avatar className="w-8 h-8">
@@ -39,7 +30,7 @@ const Header = () => {
             </div>
 
             {/* Logout Button */}
-            <Button variant="ghost" className="text-gray-700 hover:bg-gray-50">
+            <Button variant="ghost" className="text-gray-700 hover:bg-gray-50 border-0">
               <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>

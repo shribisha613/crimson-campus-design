@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Users, Search, Upload, Download, Filter, UserPlus, Edit, Trash2 } from 'lucide-react';
+import { Users, Search, Upload, Download, Edit, Trash2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const Students = () => {
@@ -20,7 +20,7 @@ const Students = () => {
 
   const courses = ['BIT', 'BBA'];
 
-  // Sample imported Excel data - this would come from actual file import
+  // Sample imported Excel data
   const importedStudentsData = {
     BIT: {
       regular: [
@@ -85,9 +85,6 @@ const Students = () => {
             <Badge variant="outline" className="text-xs">
               Excel File: {fileName}
             </Badge>
-            <Badge variant="secondary" className="text-xs">
-              {filteredStudents.length} students
-            </Badge>
           </div>
           <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" />
@@ -139,16 +136,6 @@ const Students = () => {
     );
   };
 
-  const totalStudents = Object.values(importedStudentsData).reduce((total, program) => 
-    total + program.regular.length + program.resit.length, 0
-  );
-
-  const eligibleCount = Object.values(importedStudentsData).reduce((total, program) => 
-    total + [...program.regular, ...program.resit].filter(s => s.eligible).length, 0
-  );
-
-  const ineligibleCount = totalStudents - eligibleCount;
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -157,7 +144,7 @@ const Students = () => {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Student Management</h1>
-              <p className="text-gray-600 mt-1">Manage imported student records and eligibility</p>
+              <p className="text-gray-600 mt-1">Manage imported student records</p>
             </div>
             <div className="flex gap-3">
               <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
@@ -220,90 +207,23 @@ const Students = () => {
                   </div>
                 </DialogContent>
               </Dialog>
-              <Button className="bg-red-800 hover:bg-red-900">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Add Student
-              </Button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Students</p>
-                  <p className="text-3xl font-bold text-gray-900">{totalStudents}</p>
-                </div>
-                <Users className="w-8 h-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-green-50 border-green-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-green-700">Eligible</p>
-                  <p className="text-3xl font-bold text-green-900">{eligibleCount}</p>
-                </div>
-                <Badge className="bg-green-600">Active</Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-red-50 border-red-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-red-700">Ineligible</p>
-                  <p className="text-3xl font-bold text-red-900">{ineligibleCount}</p>
-                </div>
-                <Badge className="bg-red-600">Blocked</Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-blue-700">Programs</p>
-                  <p className="text-3xl font-bold text-blue-900">{courses.length}</p>
-                </div>
-                <Badge className="bg-blue-600">Active</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Search */}
         <Card className="mb-6">
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search students by name, roll number, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filter
-                </Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export All
-                </Button>
-              </div>
+            <div className="relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search students by name, roll number, or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </CardContent>
         </Card>
