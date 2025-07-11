@@ -17,14 +17,12 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
   const [selectedRooms, setSelectedRooms] = useState(data.rooms || []);
 
   const rooms = [
-    { id: 'R101', name: 'Room 101', capacity: 30, floor: 1, building: 'Main Block', available: true },
-    { id: 'R102', name: 'Room 102', capacity: 35, floor: 1, building: 'Main Block', available: true },
-    { id: 'R201', name: 'Room 201', capacity: 40, floor: 2, building: 'Main Block', available: false },
-    { id: 'R202', name: 'Room 202', capacity: 30, floor: 2, building: 'Main Block', available: true },
-    { id: 'R301', name: 'Room 301', capacity: 25, floor: 3, building: 'Main Block', available: true },
-    { id: 'AUD1', name: 'Auditorium 1', capacity: 100, floor: 1, building: 'Auditorium Block', available: true },
-    { id: 'LAB1', name: 'Computer Lab 1', capacity: 20, floor: 1, building: 'Lab Block', available: true },
-    { id: 'LAB2', name: 'Computer Lab 2', capacity: 25, floor: 1, building: 'Lab Block', available: false }
+    { id: 'LT02', name: 'Rupa', capacity: 30, building: 'Nepal Block', available: true },
+    { id: 'Lab03', name: 'Nilgiri', capacity: 35, building: 'Nepal Block', available: true },
+    { id: 'LT01', name: 'Machhapuchchhre', capacity: 40, building: 'Nepal Block', available: false },
+    { id: 'LT03', name: 'Annapurna', capacity: 30, building: 'Nepal Block', available: true },
+    { id: 'SR01', name: 'Fewa', capacity: 25, building: 'Nepal Block', available: true },
+    { id: 'SR02', name: 'Tillicho', capacity: 100, building: 'Nepal Block', available: true },
   ];
 
   const availableRooms = rooms.filter(r => r.available);
@@ -79,9 +77,6 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
               <MapPin className="w-5 h-5 text-red-800" />
               Select Examination Rooms
             </CardTitle>
-            <Button variant="outline" onClick={handleAutoGenerate}>
-              Auto Generate Seating
-            </Button>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -121,7 +116,6 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
                     <div>
                       <h4 className="font-semibold">{room.name}</h4>
                       <p className="text-sm text-gray-600">{room.building}</p>
-                      <p className="text-sm text-gray-600">Floor {room.floor}</p>
                     </div>
                     <div className="text-right">
                       <Badge variant="outline" className="mb-2">
@@ -174,7 +168,7 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({ data, onUpdate, onNext, onP
               className="bg-red-800 hover:bg-red-900"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
-              Finalize Exam Plan
+              Generate Seat Plans
             </Button>
           </div>
         </CardContent>
