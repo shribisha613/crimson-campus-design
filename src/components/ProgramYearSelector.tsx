@@ -11,7 +11,7 @@ import { Calendar, ArrowRight, ArrowLeft, Upload, FileText, Users } from 'lucide
 interface ProgramYearSelectorProps {
   data: any;
   onUpdate: (data: any) => void;
-  onNext: () => void;
+  onNext: (data: any) => void;
   onPrevious: () => void;
 }
 
@@ -34,20 +34,22 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
 
   const handleContinue = () => {
     if (examType === 'regular' && selectedProgram && selectedYear) {
-      onUpdate({ 
-        ...data, 
+      const newData = {
+        ...data,
         examType: examType,
-        program: selectedProgram, 
-        year: selectedYear 
-      });
-      onNext();
+        program: selectedProgram,
+        year: selectedYear
+      };
+      onUpdate(newData);
+      onNext(newData);
     } else if (examType === 'resit' && uploadedFile) {
-      onUpdate({ 
-        ...data, 
+      const newData = {
+        ...data,
         examType: examType,
         uploadedFile: uploadedFile
-      });
-      onNext();
+      };
+      onUpdate(newData);
+      onNext(newData);
     }
   };
 

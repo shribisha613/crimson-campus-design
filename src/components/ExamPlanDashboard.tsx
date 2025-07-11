@@ -37,6 +37,24 @@ const ExamPlanDashboard = () => {
 
   const renderStepComponent = () => {
     const CurrentComponent = steps[currentStep].component;
+    // Custom onNext for ProgramYearSelector
+    if (CurrentComponent === ProgramYearSelector) {
+      return (
+        <ProgramYearSelector
+          data={examData}
+          onUpdate={setExamData}
+          onNext={(newData: any) => {
+            setExamData(newData);
+            if (newData.examType === 'resit') {
+              setCurrentStep(3); // Go to Student Management
+            } else {
+              setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+            }
+          }}
+          onPrevious={() => setCurrentStep(prev => Math.max(prev - 1, 0))}
+        />
+      );
+    }
     return (
       <CurrentComponent
         data={examData}
