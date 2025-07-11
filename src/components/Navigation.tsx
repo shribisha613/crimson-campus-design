@@ -1,13 +1,11 @@
 
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
   Folder,
   Users, 
-  UserCheck,
-  Plus
+  UserCheck
 } from 'lucide-react';
 
 const Navigation = () => {
@@ -23,7 +21,7 @@ const Navigation = () => {
   return (
     <nav className="bg-gray-50 border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex justify-center">
           <div className="flex space-x-8 overflow-x-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -45,14 +43,6 @@ const Navigation = () => {
               );
             })}
           </div>
-          
-          {/* Create New Exam Plan Button */}
-          <Link to="/create-exam">
-            <Button className="bg-red-800 hover:bg-red-900 ml-4">
-              <Plus className="w-4 h-4 mr-2" />
-              Create New Exam Plan
-            </Button>
-          </Link>
         </div>
       </div>
     </nav>

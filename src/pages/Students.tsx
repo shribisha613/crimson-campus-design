@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Users, Search, Upload, Download, Filter, UserPlus, Edit, Trash2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -17,24 +18,29 @@ const Students = () => {
   const [isResitStudents, setIsResitStudents] = useState(false);
   const { toast } = useToast();
 
-  const courses = ['BIT', 'BBA', 'MBA', 'BSc', 'MSc'];
+  const courses = ['BIT', 'BBA'];
 
-  const students = [
-    { id: 1, name: 'Rahul Sharma', rollNo: 'CS001', program: 'B.Tech', year: '2', section: 'A', email: 'rahul.sharma@college.edu', phone: '+91 9876543210', eligible: true },
-    { id: 2, name: 'Priya Patel', rollNo: 'CS002', program: 'B.Tech', year: '2', section: 'A', email: 'priya.patel@college.edu', phone: '+91 9876543211', eligible: true },
-    { id: 3, name: 'Amit Kumar', rollNo: 'CS003', program: 'B.Tech', year: '2', section: 'B', email: 'amit.kumar@college.edu', phone: '+91 9876543212', eligible: false },
-    { id: 4, name: 'Sneha Gupta', rollNo: 'CS004', program: 'B.Sc', year: '3', section: 'A', email: 'sneha.gupta@college.edu', phone: '+91 9876543213', eligible: true },
-    { id: 5, name: 'Vikram Singh', rollNo: 'CS005', program: 'M.Tech', year: '1', section: 'A', email: 'vikram.singh@college.edu', phone: '+91 9876543214', eligible: true }
-  ];
-
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.rollNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const eligibleCount = students.filter(s => s.eligible).length;
-  const ineligibleCount = students.filter(s => !s.eligible).length;
+  // Sample data organized by program and type
+  const studentsData = {
+    BIT: {
+      regular: [
+        { id: 1, name: 'Rahul Sharma', rollNo: 'BIT001', email: 'rahul.sharma@college.edu', phone: '+91 9876543210', eligible: true },
+        { id: 2, name: 'Amit Kumar', rollNo: 'BIT003', email: 'amit.kumar@college.edu', phone: '+91 9876543212', eligible: false },
+      ],
+      resit: [
+        { id: 3, name: 'Vikram Singh', rollNo: 'BIT005', email: 'vikram.singh@college.edu', phone: '+91 9876543214', eligible: true },
+      ]
+    },
+    BBA: {
+      regular: [
+        { id: 4, name: 'Priya Patel', rollNo: 'BBA002', email: 'priya.patel@college.edu', phone: '+91 9876543211', eligible: true },
+        { id: 5, name: 'Sneha Gupta', rollNo: 'BBA004', email: 'sneha.gupta@college.edu', phone: '+91 9876543213', eligible: true },
+      ],
+      resit: [
+        { id: 6, name: 'Pooja Verma', rollNo: 'BBA006', email: 'pooja.verma@college.edu', phone: '+91 9876543215', eligible: false },
+      ]
+    }
+  };
 
   const handleCourseToggle = (course: string) => {
     setSelectedCourses(prev => 
@@ -59,6 +65,67 @@ const Students = () => {
     setSelectedCourses([]);
     setIsResitStudents(false);
   };
+
+  const renderStudentTable = (students: any[], program: string, type: string) => {
+    const filteredStudents = students.filter(student =>
+      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.rollNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Roll Number</TableHead>
+            <TableHead>Contact</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredStudents.map((student) => (
+            <TableRow key={student.id}>
+              <TableCell className="font-medium">{student.name}</TableCell>
+              <TableCell>{student.rollNo}</TableCell>
+              <TableCell>
+                <div className="flex flex-col text-sm">
+                  <span>{student.email}</span>
+                  <span className="text-gray-500">{student.phone}</span>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
+                  {student.eligible ? 'Eligible' : 'Ineligible'}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  };
+
+  const totalStudents = Object.values(studentsData).reduce((total, program) => 
+    total + program.regular.length + program.resit.length, 0
+  );
+
+  const eligibleCount = Object.values(studentsData).reduce((total, program) => 
+    total + [...program.regular, ...program.resit].filter(s => s.eligible).length, 0
+  );
+
+  const ineligibleCount = totalStudents - eligibleCount;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -85,7 +152,7 @@ const Students = () => {
                   <div className="space-y-6 pt-4">
                     {/* Course Selection */}
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-3 block">Select Courses:</label>
+                      <label className="text-sm font-medium text-gray-700 mb-3 block">Select Programs:</label>
                       <div className="grid grid-cols-2 gap-3">
                         {courses.map(course => (
                           <div key={course} className="flex items-center space-x-2">
@@ -148,7 +215,7 @@ const Students = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Students</p>
-                  <p className="text-3xl font-bold text-gray-900">{students.length}</p>
+                  <p className="text-3xl font-bold text-gray-900">{totalStudents}</p>
                 </div>
                 <Users className="w-8 h-8 text-blue-600" />
               </div>
@@ -184,7 +251,7 @@ const Students = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-blue-700">Programs</p>
-                  <p className="text-3xl font-bold text-blue-900">3</p>
+                  <p className="text-3xl font-bold text-blue-900">{courses.length}</p>
                 </div>
                 <Badge className="bg-blue-600">Active</Badge>
               </div>
@@ -192,7 +259,7 @@ const Students = () => {
           </Card>
         </div>
 
-        {/* Filters and Actions */}
+        {/* Search */}
         <Card className="mb-6">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4">
@@ -219,64 +286,45 @@ const Students = () => {
           </CardContent>
         </Card>
 
-        {/* Students Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>All Students</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Roll Number</TableHead>
-                  <TableHead>Program</TableHead>
-                  <TableHead>Section</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredStudents.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell className="font-medium">{student.name}</TableCell>
-                    <TableCell>{student.rollNo}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {student.program} Year {student.year}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">Section {student.section}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col text-sm">
-                        <span>{student.email}</span>
-                        <span className="text-gray-500">{student.phone}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
-                        {student.eligible ? 'Eligible' : 'Ineligible'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        {/* Program Compartments */}
+        <div className="space-y-6">
+          {courses.map((program) => (
+            <Card key={program}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-lg px-3 py-1">
+                    {program}
+                  </Badge>
+                  Program Students
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="regular" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="regular">Regular Students</TabsTrigger>
+                    <TabsTrigger value="resit">Resit Students</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="regular" className="mt-4">
+                    <Card>
+                      <CardContent className="p-0">
+                        {renderStudentTable(studentsData[program as keyof typeof studentsData].regular, program, 'regular')}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  
+                  <TabsContent value="resit" className="mt-4">
+                    <Card>
+                      <CardContent className="p-0">
+                        {renderStudentTable(studentsData[program as keyof typeof studentsData].resit, program, 'resit')}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
