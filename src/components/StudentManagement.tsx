@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { Users, Upload, Download, Search, ArrowRight, ArrowLeft, UserMinus } from 'lucide-react';
 
 interface StudentManagementProps {
@@ -19,6 +21,7 @@ interface StudentManagementProps {
 const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, onNext, onPrevious }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>(['BIT']);
+  const [studentType, setStudentType] = useState<'regular' | 'resit'>('regular');
   const [activeTab, setActiveTab] = useState('regular');
 
   const courses = ['BIT', 'BBA', 'MBA', 'BSc', 'MSc'];
@@ -59,7 +62,8 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, o
     const eligibleStudents = getCurrentStudents().filter(s => s.eligible);
     onUpdate({ 
       ...data, 
-      students: eligibleStudents 
+      students: eligibleStudents,
+      studentType: studentType
     });
     onNext();
   };
@@ -86,6 +90,27 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ data, onUpdate, o
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Student Type Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Select Student Type</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RadioGroup value={studentType} onValueChange={(value: 'regular' | 'resit') => setStudentType(value)}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="regular" id="regular" />
+                  <Label htmlFor="regular">Regular Students</Label>
+                  <Badge variant="outline" className="ml-2">Standard Exam</Badge>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="resit" id="resit" />
+                  <Label htmlFor="resit">Resit Students</Label>
+                  <Badge variant="outline" className="ml-2">Supplementary Exam</Badge>
+                </div>
+              </RadioGroup>
+            </CardContent>
+          </Card>
+
           {/* Course Selection */}
           <Card>
             <CardHeader>

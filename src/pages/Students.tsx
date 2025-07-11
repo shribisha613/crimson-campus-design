@@ -20,24 +20,27 @@ const Students = () => {
 
   const courses = ['BIT', 'BBA'];
 
-  // Sample data organized by program and type
-  const studentsData = {
+  // Sample imported Excel data - this would come from actual file import
+  const importedStudentsData = {
     BIT: {
       regular: [
-        { id: 1, name: 'Rahul Sharma', rollNo: 'BIT001', email: 'rahul.sharma@college.edu', phone: '+91 9876543210', eligible: true },
-        { id: 2, name: 'Amit Kumar', rollNo: 'BIT003', email: 'amit.kumar@college.edu', phone: '+91 9876543212', eligible: false },
+        { id: 1, name: 'Rahul Sharma', rollNo: 'BIT001', email: 'rahul.sharma@college.edu', phone: '+91 9876543210', eligible: true, importedFrom: 'BIT_Regular_2024.xlsx' },
+        { id: 2, name: 'Amit Kumar', rollNo: 'BIT003', email: 'amit.kumar@college.edu', phone: '+91 9876543212', eligible: false, importedFrom: 'BIT_Regular_2024.xlsx' },
+        { id: 3, name: 'Neha Singh', rollNo: 'BIT007', email: 'neha.singh@college.edu', phone: '+91 9876543216', eligible: true, importedFrom: 'BIT_Regular_2024.xlsx' },
       ],
       resit: [
-        { id: 3, name: 'Vikram Singh', rollNo: 'BIT005', email: 'vikram.singh@college.edu', phone: '+91 9876543214', eligible: true },
+        { id: 4, name: 'Vikram Singh', rollNo: 'BIT005', email: 'vikram.singh@college.edu', phone: '+91 9876543214', eligible: true, importedFrom: 'BIT_Resit_2024.xlsx' },
+        { id: 5, name: 'Arjun Patel', rollNo: 'BIT009', email: 'arjun.patel@college.edu', phone: '+91 9876543218', eligible: false, importedFrom: 'BIT_Resit_2024.xlsx' },
       ]
     },
     BBA: {
       regular: [
-        { id: 4, name: 'Priya Patel', rollNo: 'BBA002', email: 'priya.patel@college.edu', phone: '+91 9876543211', eligible: true },
-        { id: 5, name: 'Sneha Gupta', rollNo: 'BBA004', email: 'sneha.gupta@college.edu', phone: '+91 9876543213', eligible: true },
+        { id: 6, name: 'Priya Patel', rollNo: 'BBA002', email: 'priya.patel@college.edu', phone: '+91 9876543211', eligible: true, importedFrom: 'BBA_Regular_2024.xlsx' },
+        { id: 7, name: 'Sneha Gupta', rollNo: 'BBA004', email: 'sneha.gupta@college.edu', phone: '+91 9876543213', eligible: true, importedFrom: 'BBA_Regular_2024.xlsx' },
+        { id: 8, name: 'Rajesh Kumar', rollNo: 'BBA008', email: 'rajesh.kumar@college.edu', phone: '+91 9876543217', eligible: false, importedFrom: 'BBA_Regular_2024.xlsx' },
       ],
       resit: [
-        { id: 6, name: 'Pooja Verma', rollNo: 'BBA006', email: 'pooja.verma@college.edu', phone: '+91 9876543215', eligible: false },
+        { id: 9, name: 'Pooja Verma', rollNo: 'BBA006', email: 'pooja.verma@college.edu', phone: '+91 9876543215', eligible: false, importedFrom: 'BBA_Resit_2024.xlsx' },
       ]
     }
   };
@@ -73,55 +76,74 @@ const Students = () => {
       student.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const fileName = filteredStudents.length > 0 ? filteredStudents[0].importedFrom : `${program}_${type}_2024.xlsx`;
+
     return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Roll Number</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredStudents.map((student) => (
-            <TableRow key={student.id}>
-              <TableCell className="font-medium">{student.name}</TableCell>
-              <TableCell>{student.rollNo}</TableCell>
-              <TableCell>
-                <div className="flex flex-col text-sm">
-                  <span>{student.email}</span>
-                  <span className="text-gray-500">{student.phone}</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
-                  {student.eligible ? 'Eligible' : 'Ineligible'}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </TableCell>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              Excel File: {fileName}
+            </Badge>
+            <Badge variant="secondary" className="text-xs">
+              {filteredStudents.length} students
+            </Badge>
+          </div>
+          <Button variant="outline" size="sm">
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+        </div>
+        
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Roll Number</TableHead>
+              <TableHead>Contact</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredStudents.map((student) => (
+              <TableRow key={student.id}>
+                <TableCell className="font-medium">{student.name}</TableCell>
+                <TableCell>{student.rollNo}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col text-sm">
+                    <span>{student.email}</span>
+                    <span className="text-gray-500">{student.phone}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge className={student.eligible ? 'bg-green-600' : 'bg-red-600'}>
+                    {student.eligible ? 'Eligible' : 'Ineligible'}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     );
   };
 
-  const totalStudents = Object.values(studentsData).reduce((total, program) => 
+  const totalStudents = Object.values(importedStudentsData).reduce((total, program) => 
     total + program.regular.length + program.resit.length, 0
   );
 
-  const eligibleCount = Object.values(studentsData).reduce((total, program) => 
+  const eligibleCount = Object.values(importedStudentsData).reduce((total, program) => 
     total + [...program.regular, ...program.resit].filter(s => s.eligible).length, 0
   );
 
@@ -135,7 +157,7 @@ const Students = () => {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Student Management</h1>
-              <p className="text-gray-600 mt-1">Manage student records and eligibility</p>
+              <p className="text-gray-600 mt-1">Manage imported student records and eligibility</p>
             </div>
             <div className="flex gap-3">
               <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
@@ -279,7 +301,7 @@ const Students = () => {
                 </Button>
                 <Button variant="outline">
                   <Download className="w-4 h-4 mr-2" />
-                  Export
+                  Export All
                 </Button>
               </div>
             </div>
@@ -307,16 +329,16 @@ const Students = () => {
                   
                   <TabsContent value="regular" className="mt-4">
                     <Card>
-                      <CardContent className="p-0">
-                        {renderStudentTable(studentsData[program as keyof typeof studentsData].regular, program, 'regular')}
+                      <CardContent className="p-6">
+                        {renderStudentTable(importedStudentsData[program as keyof typeof importedStudentsData].regular, program, 'regular')}
                       </CardContent>
                     </Card>
                   </TabsContent>
                   
                   <TabsContent value="resit" className="mt-4">
                     <Card>
-                      <CardContent className="p-0">
-                        {renderStudentTable(studentsData[program as keyof typeof studentsData].resit, program, 'resit')}
+                      <CardContent className="p-6">
+                        {renderStudentTable(importedStudentsData[program as keyof typeof importedStudentsData].resit, program, 'resit')}
                       </CardContent>
                     </Card>
                   </TabsContent>
