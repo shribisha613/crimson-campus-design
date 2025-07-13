@@ -134,26 +134,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* System Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle>System Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Database</span>
-                  <Badge className="bg-green-600">Online</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Backup</span>
-                  <Badge className="bg-green-600">Updated</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Last Sync</span>
-                  <span className="text-sm text-gray-600">2 min ago</span>
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
         </div>
       </div>

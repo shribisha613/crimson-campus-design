@@ -213,7 +213,7 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
               }
               className="bg-red-800 hover:bg-red-900"
             >
-              {examType === 'regular' ? 'Continue to Sections' : 'Continue to Student Management'}
+              {examType === 'regular' ? 'Continue to Sections' : 'Continue to Room Selection'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>

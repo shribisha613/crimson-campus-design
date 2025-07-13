@@ -46,7 +46,7 @@ const ExamPlanDashboard = () => {
           onNext={(newData: any) => {
             setExamData(newData);
             if (newData.examType === 'resit') {
-              setCurrentStep(3); // Go to Student Management
+              setCurrentStep(4); // Go to Room Selection
             } else {
               setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
             }
@@ -75,50 +75,12 @@ const ExamPlanDashboard = () => {
               <h1 className="text-3xl font-bold text-gray-900">RTE Exam Management</h1>
               <p className="text-gray-600 mt-1">Create and manage examination plans</p>
             </div>
-            <Badge variant="outline" className="text-red-800 border-red-200">
-              Department of Education
-            </Badge>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Progress Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Exam Plan Creation Progress</CardTitle>
-              <span className="text-sm text-gray-600">{Math.round(progress)}% Complete</span>
-            </div>
-            <Progress value={progress} className="mt-2" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              {steps.map((step, index) => (
-                <div key={step.id} className="flex flex-col items-center">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 mb-2 ${
-                    index < currentStep 
-                      ? 'bg-red-800 border-red-800 text-white' 
-                      : index === currentStep 
-                        ? 'border-red-800 text-red-800 bg-red-50' 
-                        : 'border-gray-300 text-gray-400'
-                  }`}>
-                    {index < currentStep ? (
-                      <CheckCircle className="w-6 h-6" />
-                    ) : (
-                      <step.icon className="w-6 h-6" />
-                    )}
-                  </div>
-                  <span className={`text-xs text-center max-w-20 ${
-                    index <= currentStep ? 'text-gray-900 font-medium' : 'text-gray-500'
-                  }`}>
-                    {step.title}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
