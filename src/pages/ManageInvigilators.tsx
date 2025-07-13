@@ -1,19 +1,55 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, useRef } from 'react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Upload, Search, Filter, Edit, Trash2, UserCheck, Users, Download } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Upload,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  UserCheck,
+  Users,
+  Download,
+} from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const ManageInvigilators = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('academic');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [importedFiles, setImportedFiles] = useState<{ [key: string]: string[] }>({
+    academic: [],
+    'non-academic': []
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const academicStaff = [
@@ -29,22 +65,35 @@ const ManageInvigilators = () => {
     { id: 7, name: 'Robert Security', department: 'Security', experience: 4, status: 'Unavailable' },
   ];
 
-  const getCurrentData = () => {
-    return activeTab === 'academic' ? academicStaff : nonAcademicStaff;
-  };
+  const getCurrentData = () => activeTab === 'academic' ? academicStaff : nonAcademicStaff;
 
   const filteredData = getCurrentData().filter(staff =>
     staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     staff.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleImport = (type: 'academic' | 'non-academic') => {
-    console.log(`Importing ${type} staff list`);
+  const handleFileImport = (type: 'academic' | 'non-academic', file: File) => {
+    const fileName = file.name;
+    setImportedFiles(prev => {
+      const existing = prev[type] || [];
+      return {
+        ...prev,
+        [type]: existing.includes(fileName) ? existing : [...existing, fileName]
+      };
+    });
     toast({
-      title: "Import Started",
-      description: `${type === 'academic' ? 'Academic' : 'Non-Academic'} staff import has been initiated.`,
+      title: 'File Imported',
+      description: `${file.name} added to ${type} staff.`,
     });
     setImportDialogOpen(false);
+  };
+
+  const triggerFileInput = (type: 'academic' | 'non-academic') => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.xls';
+    input.onchange = (e: any) => handleFileImport(type, e.target.files[0]);
+    input.click();
   };
 
   return (
@@ -76,20 +125,11 @@ const ManageInvigilators = () => {
                 <div className="space-y-4 pt-4">
                   <p className="text-sm text-gray-600">Choose the type of staff you want to import:</p>
                   <div className="flex flex-col gap-3">
-                    <Button 
-                      onClick={() => handleImport('academic')}
-                      className="bg-red-800 hover:bg-red-900 justify-start"
-                    >
-                      <Users className="w-4 h-4 mr-2" />
-                      Academic Staff
+                    <Button onClick={() => triggerFileInput('academic')} className="bg-red-800 hover:bg-red-900 justify-start">
+                      <Users className="w-4 h-4 mr-2" /> Academic Staff
                     </Button>
-                    <Button 
-                      onClick={() => handleImport('non-academic')}
-                      variant="outline"
-                      className="justify-start"
-                    >
-                      <UserCheck className="w-4 h-4 mr-2" />
-                      Non-Academic Staff
+                    <Button onClick={() => triggerFileInput('non-academic')} variant="outline" className="justify-start">
+                      <UserCheck className="w-4 h-4 mr-2" /> Non-Academic Staff
                     </Button>
                   </div>
                 </div>
@@ -129,8 +169,7 @@ const ManageInvigilators = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <UserCheck className="w-5 h-5" />
-              Invigilators
+              <UserCheck className="w-5 h-5" /> Invigilators
             </CardTitle>
           </div>
         </CardHeader>
@@ -140,8 +179,10 @@ const ManageInvigilators = () => {
               <TabsTrigger value="academic">Academic Staff ({academicStaff.length})</TabsTrigger>
               <TabsTrigger value="non-academic">Non-Academic Staff ({nonAcademicStaff.length})</TabsTrigger>
             </TabsList>
-            
             <TabsContent value="academic">
+              {importedFiles.academic.map((file, idx) => (
+                <Badge key={idx} className="mb-2 mr-2">{file}</Badge>
+              ))}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -178,8 +219,10 @@ const ManageInvigilators = () => {
                 </TableBody>
               </Table>
             </TabsContent>
-            
             <TabsContent value="non-academic">
+              {importedFiles['non-academic'].map((file, idx) => (
+                <Badge key={idx} className="mb-2 mr-2">{file}</Badge>
+              ))}
               <Table>
                 <TableHeader>
                   <TableRow>
