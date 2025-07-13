@@ -110,9 +110,6 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
                         <h4 className="font-semibold">{program.name}</h4>
                         <p className="text-sm text-gray-600">{program.description}</p>
                       </div>
-                      {selectedProgram === program.id && (
-                        <Badge className="bg-red-800">Selected</Badge>
-                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -141,9 +138,6 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
                               <h4 className="font-semibold">{year.name}</h4>
                               <p className="text-sm text-gray-600">{year.students} students enrolled</p>
                             </div>
-                            {selectedYear === year.id && (
-                              <Badge className="bg-red-800">Selected</Badge>
-                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -213,7 +207,7 @@ const ProgramYearSelector: React.FC<ProgramYearSelectorProps> = ({ data, onUpdat
               }
               className="bg-red-800 hover:bg-red-900"
             >
-              {examType === 'regular' ? 'Continue to Sections' : 'Continue to Student Management'}
+              {examType === 'regular' ? 'Continue to Sections' : 'Continue to Room Selection'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
