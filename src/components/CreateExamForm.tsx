@@ -49,7 +49,7 @@ const CreateExamForm: React.FC<CreateExamFormProps> = ({
     const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Exam name is required";
     if (!formData.date) newErrors.date = "Exam date is required";
-    if (!formData.startTime) newErrors.startTime = "Start time is required";
+    if (!formData.startTime) newErrors.startTime = "Start time is required and End Time is required";
     if (!formData.endTime) newErrors.endTime = "End time is required";
     if (
       formData.startTime &&

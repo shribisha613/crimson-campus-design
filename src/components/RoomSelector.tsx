@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MapPin, ArrowRight, ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react';
-import * as XLSX from 'xlsx';
 import { useToast } from '@/components/ui/use-toast';
 
 interface RoomSelectorProps {
