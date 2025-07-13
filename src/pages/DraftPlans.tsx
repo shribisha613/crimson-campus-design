@@ -17,7 +17,7 @@ const DraftPlans = () => {
       name: 'Mid-term Mathematics Exam',
       date: '2024-01-15',
       time: '10:00 AM',
-      program: 'B.Tech',
+      program: 'BIT',
       year: '2',
       sections: ['A', 'B', 'C'],
       students: 125,
@@ -30,7 +30,7 @@ const DraftPlans = () => {
       name: 'Physics Final Examination',
       date: '2024-01-18',
       time: '02:00 PM',
-      program: 'B.Sc',
+      program: 'BBA',
       year: '3',
       sections: ['A', 'B'],
       students: 98,
@@ -43,7 +43,7 @@ const DraftPlans = () => {
       name: 'Chemistry Lab Assessment',
       date: '2024-01-20',
       time: '09:00 AM',
-      program: 'B.Tech',
+      program: 'BIT',
       year: '1',
       sections: ['A', 'B', 'C', 'D'],
       students: 167,
@@ -75,23 +75,17 @@ const DraftPlans = () => {
         <p className="text-gray-600 mt-1">Manage draft examination plans and assign invigilators</p>
       </div>
 
-      {/* Filters */}
+      {/* Search */}
       <Card className="mb-6">
         <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-              <Input
-                placeholder="Search draft plans..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button variant="outline">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
+          <div className="relative">
+            <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+            <Input
+              placeholder="Search draft plans..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
         </CardContent>
       </Card>
@@ -158,19 +152,16 @@ const DraftPlans = () => {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          className={plan.invigilatorsAssigned ? 'border-green-600 text-green-600' : 'border-red-800 text-red-800'}
+                          className={plan.invigilatorsAssigned ? 'border-green-600 text-green-600 hover:bg-green-50' : 'border-red-800 text-red-800 hover:bg-red-50'}
                         >
                           <UserCheck className="w-4 h-4 mr-1" />
                           {plan.invigilatorsAssigned ? 'View' : 'Assign'}
                         </Button>
                       </Link>
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="hover:bg-gray-50">
                         <Download className="w-4 h-4" />
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="hover:bg-red-50 text-red-600 border-red-200 hover:border-red-300">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
