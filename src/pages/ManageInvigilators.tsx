@@ -1,10 +1,5 @@
-import React, { useState, useRef } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -16,12 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -29,69 +19,66 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Upload,
-  Search,
-  Filter,
-  Edit,
-  Trash2,
-  UserCheck,
-  Users,
-  Download,
-} from 'lucide-react';
+import { Upload, Search, Trash2, UserCheck, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const ManageInvigilators = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('academic');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("academic");
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [importedFiles, setImportedFiles] = useState<{ [key: string]: string[] }>({
+  const [importedFiles, setImportedFiles] = useState<{
+    [key: string]: string[];
+  }>({
     academic: [],
-    'non-academic': []
+    "non-academic": [],
   });
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { toast } = useToast();
 
-  const academicStaff = [
-    { id: 1, name: 'Dr. Smith Johnson', department: 'Mathematics', experience: 5, status: 'Available' },
-    { id: 2, name: 'Prof. Sarah Davis', department: 'Physics', experience: 8, status: 'Available' },
-    { id: 3, name: 'Dr. Michael Brown', department: 'Chemistry', experience: 3, status: 'Unavailable' },
-    { id: 4, name: 'Prof. Emily Wilson', department: 'Mathematics', experience: 7, status: 'Available' },
-  ];
+  const [academicStaff, setAcademicStaff] = useState([
+    { id: 1, name: "Dr. Smith Johnson", email: "Mathematics" },
+    { id: 2, name: "Prof. Sarah Davis", email: "Physics" },
+    { id: 3, name: "Dr. Michael Brown", email: "Chemistry" },
+    { id: 4, name: "Prof. Emily Wilson", email: "Mathematics" },
+  ]);
 
-  const nonAcademicStaff = [
-    { id: 5, name: 'John Administrator', department: 'Administration', experience: 2, status: 'Available' },
-    { id: 6, name: 'Mary Clerk', department: 'Office', experience: 1, status: 'Available' },
-    { id: 7, name: 'Robert Security', department: 'Security', experience: 4, status: 'Unavailable' },
-  ];
+  const [nonAcademicStaff, setNonAcademicStaff] = useState([
+    { id: 5, name: "John Administrator", email: "Administration" },
+    { id: 6, name: "Mary Clerk", email: "Office" },
+    { id: 7, name: "Robert Security", email: "Security" },
+  ]);
 
-  const getCurrentData = () => activeTab === 'academic' ? academicStaff : nonAcademicStaff;
+  const getCurrentData = () =>
+    activeTab === "academic" ? academicStaff : nonAcademicStaff;
 
-  const filteredData = getCurrentData().filter(staff =>
-    staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    staff.department.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = getCurrentData().filter(
+    (staff) =>
+      staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      staff.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleFileImport = (type: 'academic' | 'non-academic', file: File) => {
+  const handleFileImport = (type: "academic" | "non-academic", file: File) => {
     const fileName = file.name;
-    setImportedFiles(prev => {
+    setImportedFiles((prev) => {
       const existing = prev[type] || [];
       return {
         ...prev,
-        [type]: existing.includes(fileName) ? existing : [...existing, fileName]
+        [type]: existing.includes(fileName)
+          ? existing
+          : [...existing, fileName],
       };
     });
     toast({
-      title: 'File Imported',
+      title: "File Imported",
       description: `${file.name} added to ${type} staff.`,
     });
     setImportDialogOpen(false);
   };
 
-  const triggerFileInput = (type: 'academic' | 'non-academic') => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.xls';
+  const triggerFileInput = (type: "academic" | "non-academic") => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx,.xls";
     input.onchange = (e: any) => handleFileImport(type, e.target.files[0]);
     input.click();
   };
@@ -100,50 +87,15 @@ const ManageInvigilators = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Manage Invigilators</h1>
-        <p className="text-gray-600 mt-1">Import and manage invigilator lists</p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Manage Invigilators
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Import and manage invigilator lists
+        </p>
       </div>
 
-      {/* Import Actions */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Import Invigilators</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-red-800 hover:bg-red-900">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Import Invigilators
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Select Staff Type</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 pt-4">
-                  <p className="text-sm text-gray-600">Choose the type of staff you want to import:</p>
-                  <div className="flex flex-col gap-3">
-                    <Button onClick={() => triggerFileInput('academic')} className="bg-red-800 hover:bg-red-900 justify-start">
-                      <Users className="w-4 h-4 mr-2" /> Academic Staff
-                    </Button>
-                    <Button onClick={() => triggerFileInput('non-academic')} variant="outline" className="justify-start">
-                      <UserCheck className="w-4 h-4 mr-2" /> Non-Academic Staff
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-            <Button variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Download Template
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Search and Filters */}
+      {/* Search and Import */}
       <Card className="mb-6">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -156,103 +108,170 @@ const ManageInvigilators = () => {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
+            <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-red-800 hover:bg-red-900">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Import Invigilators
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Select Staff Type</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <p className="text-sm text-gray-600">
+                    Choose the type of staff you want to import:
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <Button
+                      onClick={() => triggerFileInput("academic")}
+                      className="bg-red-800 hover:bg-red-900 justify-start"
+                    >
+                      <Users className="w-4 h-4 mr-2" /> Academic Staff
+                    </Button>
+                    <Button
+                      onClick={() => triggerFileInput("non-academic")}
+                      variant="outline"
+                      className="justify-start"
+                    >
+                      <UserCheck className="w-4 h-4 mr-2" /> Non-Academic Staff
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardContent>
       </Card>
 
-      {/* Invigilators List */}
+      {/* Tabs */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <UserCheck className="w-5 h-5" /> Invigilators
-            </CardTitle>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <UserCheck className="w-5 h-5" /> Invigilators
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="academic">Academic Staff ({academicStaff.length})</TabsTrigger>
-              <TabsTrigger value="non-academic">Non-Academic Staff ({nonAcademicStaff.length})</TabsTrigger>
+              <TabsTrigger value="academic">
+                Academic Staff ({academicStaff.length})
+              </TabsTrigger>
+              <TabsTrigger value="non-academic">
+                Non-Academic Staff ({nonAcademicStaff.length})
+              </TabsTrigger>
             </TabsList>
+
+            {/* Academic */}
             <TabsContent value="academic">
-              {importedFiles.academic.map((file, idx) => (
-                <Badge key={idx} className="mb-2 mr-2">{file}</Badge>
-              ))}
+              <div className="mb-4">
+                {importedFiles.academic.map((file, idx) => (
+                  <Badge key={idx} className="mb-2 mr-2">
+                    {file}
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Academic Staff List</h2>
+                {academicStaff.length > 0 && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      if (
+                        confirm(
+                          "Are you sure you want to remove all academic staff?"
+                        )
+                      ) {
+                        setAcademicStaff([]);
+                        toast({
+                          title: "All academic staff removed",
+                          description: "The list has been cleared.",
+                        });
+                      }
+                    }}
+                  >
+                    Remove All
+                  </Button>
+                )}
+              </div>
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead>Experience</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredData.map((staff) => (
+                  {academicStaff.map((staff) => (
                     <TableRow key={staff.id}>
-                      <TableCell className="font-medium">{staff.name}</TableCell>
-                      <TableCell>{staff.department}</TableCell>
-                      <TableCell>{staff.experience} years</TableCell>
+                      <TableCell>{staff.name}</TableCell>
+                      <TableCell>{staff.email}</TableCell>
                       <TableCell>
-                        <Badge className={staff.status === 'Available' ? 'bg-green-600' : 'bg-red-600'}>
-                          {staff.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TabsContent>
+
+            {/* Non-Academic */}
             <TabsContent value="non-academic">
-              {importedFiles['non-academic'].map((file, idx) => (
-                <Badge key={idx} className="mb-2 mr-2">{file}</Badge>
-              ))}
+              <div className="mb-4">
+                {importedFiles["non-academic"].map((file, idx) => (
+                  <Badge key={idx} className="mb-2 mr-2">
+                    {file}
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">
+                  Non-Academic Staff List
+                </h2>
+                {nonAcademicStaff.length > 0 && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      if (
+                        confirm(
+                          "Are you sure you want to remove all non-academic staff?"
+                        )
+                      ) {
+                        setNonAcademicStaff([]);
+                        toast({
+                          title: "All non-academic staff removed",
+                          description: "The list has been cleared.",
+                        });
+                      }
+                    }}
+                  >
+                    Remove All
+                  </Button>
+                )}
+              </div>
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead>Experience</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredData.map((staff) => (
+                  {nonAcademicStaff.map((staff) => (
                     <TableRow key={staff.id}>
-                      <TableCell className="font-medium">{staff.name}</TableCell>
-                      <TableCell>{staff.department}</TableCell>
-                      <TableCell>{staff.experience} years</TableCell>
+                      <TableCell>{staff.name}</TableCell>
+                      <TableCell>{staff.email}</TableCell>
                       <TableCell>
-                        <Badge className={staff.status === 'Available' ? 'bg-green-600' : 'bg-red-600'}>
-                          {staff.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

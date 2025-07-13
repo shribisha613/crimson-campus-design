@@ -1,10 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,21 +9,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trash, Upload } from "lucide-react";
+import { Edit, Trash, Upload } from "lucide-react";
 
 const Students = () => {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [importFile, setImportFile] = useState<File | null>(null);
-  const [importedFiles, setImportedFiles] = useState<{ [key: string]: string[] }>({
-    BIT: ["BIT_2024.xlsx", "BIT_Regular_2024.xlsx"],
-    BBA: ["BBA_Regular_2024.xlsx"],
+  const [renamingFile, setRenamingFile] = useState<string | null>(null);
+  const [newFileName, setNewFileName] = useState("");
+  const [importedFiles, setImportedFiles] = useState<{
+    [key: string]: string[];
+  }>({
+    BIT: ["BIT_2024.xlsx", "BIT_2023.xlsx"],
+    BBA: ["BBA_Regular_2023.xlsx"],
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const courses = ["BIT", "BBA"];
 
   const handleCourseToggle = (course: string) => {
@@ -39,13 +37,38 @@ const Students = () => {
     );
   };
 
+  const handleRenameFile = (program: string, file: string) => {
+    setRenamingFile(file);
+    setNewFileName(file);
+  };
+
+  const performRename = (program: string, oldName: string, newName: string) => {
+    if (!newName.trim() || newName === oldName) {
+      setRenamingFile(null);
+      return;
+    }
+
+    setImportedFiles((prev) => {
+      const updated = { ...prev };
+      if (updated[program].includes(newName)) {
+        alert("A file with this name already exists.");
+        return prev;
+      }
+      updated[program] = updated[program].map((f) =>
+        f === oldName ? newName : f
+      );
+      return updated;
+    });
+
+    setRenamingFile(null);
+  };
+
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImportFile(file);
       const fileName = file.name;
 
-      // Add file to each selected course
       setImportedFiles((prev) => {
         const updated = { ...prev };
         selectedCourses.forEach((course) => {
@@ -76,19 +99,48 @@ const Students = () => {
         {files.map((file, idx) => (
           <div
             key={idx}
-            className="flex items-center justify-between border p-4 rounded-md shadow-sm bg-white"
+            className="flex items-center justify-between border p-4 rounded-md shadow-sm bg-white gap-2"
           >
-            <Badge variant="outline" className="text-sm px-4 py-2">
-              {file}
-            </Badge>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleDeleteFile(program, file)}
-            >
-              <Trash className="w-4 h-4 mr-2" />
-              Delete
-            </Button>
+            {renamingFile === file ? (
+              <input
+                type="text"
+                value={newFileName}
+                onChange={(e) => setNewFileName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    performRename(program, file, newFileName);
+                  } else if (e.key === "Escape") {
+                    setRenamingFile(null);
+                  }
+                }}
+                onBlur={() => performRename(program, file, newFileName)}
+                autoFocus
+                className="border px-2 py-1 rounded text-sm w-40"
+              />
+            ) : (
+              <Badge variant="outline" className="text-sm px-4 py-2">
+                {file}
+              </Badge>
+            )}
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleRenameFile(program, file)}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Rename
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleDeleteFile(program, file)}
+              >
+                <Trash className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -110,7 +162,10 @@ const Students = () => {
               </p>
             </div>
             <div className="flex gap-3">
-              <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+              <Dialog
+                open={importDialogOpen}
+                onOpenChange={setImportDialogOpen}
+              >
                 <DialogTrigger asChild>
                   <Button variant="outline">
                     <Upload className="w-4 h-4 mr-2" />
@@ -129,13 +184,19 @@ const Students = () => {
                       </label>
                       <div className="grid grid-cols-2 gap-3">
                         {courses.map((course) => (
-                          <div key={course} className="flex items-center space-x-2">
+                          <div
+                            key={course}
+                            className="flex items-center space-x-2"
+                          >
                             <Checkbox
                               id={course}
                               checked={selectedCourses.includes(course)}
                               onCheckedChange={() => handleCourseToggle(course)}
                             />
-                            <label htmlFor={course} className="text-sm font-medium">
+                            <label
+                              htmlFor={course}
+                              className="text-sm font-medium"
+                            >
                               {course}
                             </label>
                           </div>
@@ -166,8 +227,8 @@ const Students = () => {
         </div>
       </div>
 
+      {/* Program Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Program Compartments */}
         <div className="space-y-6">
           {courses.map((program) => (
             <Card key={program}>
@@ -176,12 +237,11 @@ const Students = () => {
                   <Badge variant="outline" className="text-lg px-3 py-1">
                     {program}
                   </Badge>
-                  Program Students
+                  Program Students List
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="files" className="w-full">
-
                   <TabsContent value="files" className="mt-4">
                     <Card>
                       <CardContent className="p-6">
