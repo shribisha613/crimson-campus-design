@@ -148,9 +148,9 @@ const Students = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
@@ -231,7 +231,7 @@ const Students = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {courses.map((program) => (
-            <Card key={program}>
+            <Card key={program} className="bg-white">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Badge variant="outline" className="text-lg px-3 py-1">

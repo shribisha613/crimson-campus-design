@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -11,7 +16,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +29,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Upload, Search, Trash2, UserCheck, Users } from "lucide-react";
+import {
+  Upload,
+  Search,
+  Trash2,
+  UserCheck,
+  Users,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const ManageInvigilators = () => {
@@ -84,203 +100,205 @@ const ManageInvigilators = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Manage Invigilators
-        </h1>
-        <p className="text-gray-600 mt-1">
-          Import and manage invigilator lists
-        </p>
-      </div>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Manage Invigilators
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Import and manage invigilator lists
+          </p>
+        </div>
 
-      {/* Search and Import */}
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-              <Input
-                placeholder="Search invigilators..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-red-800 hover:bg-red-900">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Import Invigilators
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Select Staff Type</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 pt-4">
-                  <p className="text-sm text-gray-600">
-                    Choose the type of staff you want to import:
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    <Button
-                      onClick={() => triggerFileInput("academic")}
-                      className="bg-red-800 hover:bg-red-900 justify-start"
-                    >
-                      <Users className="w-4 h-4 mr-2" /> Academic Staff
-                    </Button>
-                    <Button
-                      onClick={() => triggerFileInput("non-academic")}
-                      variant="outline"
-                      className="justify-start"
-                    >
-                      <UserCheck className="w-4 h-4 mr-2" /> Non-Academic Staff
-                    </Button>
+        {/* Search and Import */}
+        <Card className="mb-6 bg-white border shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Search invigilators..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-red-800 hover:bg-red-900">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Import Invigilators
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Select Staff Type</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-4">
+                    <p className="text-sm text-gray-600">
+                      Choose the type of staff you want to import:
+                    </p>
+                    <div className="flex flex-col gap-3">
+                      <Button
+                        onClick={() => triggerFileInput("academic")}
+                        className="bg-red-800 hover:bg-red-900 justify-start"
+                      >
+                        <Users className="w-4 h-4 mr-2" /> Academic Staff
+                      </Button>
+                      <Button
+                        onClick={() => triggerFileInput("non-academic")}
+                        variant="outline"
+                        className="justify-start"
+                      >
+                        <UserCheck className="w-4 h-4 mr-2" /> Non-Academic Staff
+                      </Button>
+                    </div>
                   </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tabs */}
+        <Card className="bg-white border shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserCheck className="w-5 h-5" /> Invigilators
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="academic">
+                  Academic Staff ({academicStaff.length})
+                </TabsTrigger>
+                <TabsTrigger value="non-academic">
+                  Non-Academic Staff ({nonAcademicStaff.length})
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Academic Tab */}
+              <TabsContent value="academic">
+                <div className="mb-4">
+                  {importedFiles.academic.map((file, idx) => (
+                    <Badge key={idx} className="mb-2 mr-2">
+                      {file}
+                    </Badge>
+                  ))}
                 </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Tabs */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserCheck className="w-5 h-5" /> Invigilators
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="academic">
-                Academic Staff ({academicStaff.length})
-              </TabsTrigger>
-              <TabsTrigger value="non-academic">
-                Non-Academic Staff ({nonAcademicStaff.length})
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Academic */}
-            <TabsContent value="academic">
-              <div className="mb-4">
-                {importedFiles.academic.map((file, idx) => (
-                  <Badge key={idx} className="mb-2 mr-2">
-                    {file}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Academic Staff List</h2>
-                {academicStaff.length > 0 && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => {
-                      if (
-                        confirm(
-                          "Are you sure you want to remove all academic staff?"
-                        )
-                      ) {
-                        setAcademicStaff([]);
-                        toast({
-                          title: "All academic staff removed",
-                          description: "The list has been cleared.",
-                        });
-                      }
-                    }}
-                  >
-                    Remove All
-                  </Button>
-                )}
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {academicStaff.map((staff) => (
-                    <TableRow key={staff.id}>
-                      <TableCell>{staff.name}</TableCell>
-                      <TableCell>{staff.email}</TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Academic Staff List</h2>
+                  {academicStaff.length > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        if (
+                          confirm(
+                            "Are you sure you want to remove all academic staff?"
+                          )
+                        ) {
+                          setAcademicStaff([]);
+                          toast({
+                            title: "All academic staff removed",
+                            description: "The list has been cleared.",
+                          });
+                        }
+                      }}
+                    >
+                      Remove All
+                    </Button>
+                  )}
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TabsContent>
+                  </TableHeader>
+                  <TableBody>
+                    {academicStaff.map((staff) => (
+                      <TableRow key={staff.id}>
+                        <TableCell>{staff.name}</TableCell>
+                        <TableCell>{staff.email}</TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TabsContent>
 
-            {/* Non-Academic */}
-            <TabsContent value="non-academic">
-              <div className="mb-4">
-                {importedFiles["non-academic"].map((file, idx) => (
-                  <Badge key={idx} className="mb-2 mr-2">
-                    {file}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">
-                  Non-Academic Staff List
-                </h2>
-                {nonAcademicStaff.length > 0 && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => {
-                      if (
-                        confirm(
-                          "Are you sure you want to remove all non-academic staff?"
-                        )
-                      ) {
-                        setNonAcademicStaff([]);
-                        toast({
-                          title: "All non-academic staff removed",
-                          description: "The list has been cleared.",
-                        });
-                      }
-                    }}
-                  >
-                    Remove All
-                  </Button>
-                )}
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {nonAcademicStaff.map((staff) => (
-                    <TableRow key={staff.id}>
-                      <TableCell>{staff.name}</TableCell>
-                      <TableCell>{staff.email}</TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+              {/* Non-Academic Tab */}
+              <TabsContent value="non-academic">
+                <div className="mb-4">
+                  {importedFiles["non-academic"].map((file, idx) => (
+                    <Badge key={idx} className="mb-2 mr-2">
+                      {file}
+                    </Badge>
                   ))}
-                </TableBody>
-              </Table>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+                </div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">
+                    Non-Academic Staff List
+                  </h2>
+                  {nonAcademicStaff.length > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        if (
+                          confirm(
+                            "Are you sure you want to remove all non-academic staff?"
+                          )
+                        ) {
+                          setNonAcademicStaff([]);
+                          toast({
+                            title: "All non-academic staff removed",
+                            description: "The list has been cleared.",
+                          });
+                        }
+                      }}
+                    >
+                      Remove All
+                    </Button>
+                  )}
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {nonAcademicStaff.map((staff) => (
+                      <TableRow key={staff.id}>
+                        <TableCell>{staff.name}</TableCell>
+                        <TableCell>{staff.email}</TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
