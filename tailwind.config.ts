@@ -18,7 +18,11 @@ export default {
 			}
 		},
 		extend: {
+			fontSize: {
+				'xxs': '0.625rem',
+			},
 			colors: {
+				rteRed: '#B91C1CFF',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

@@ -1,42 +1,36 @@
-
-import React from 'react';
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Folder,
-  Users, 
-  UserCheck,
-  Plus
-} from 'lucide-react';
+import { LayoutDashboard, Folder, Users, UserCheck, Plus } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
-  
+
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/draft-plans', label: 'Draft Plans', icon: Folder },
-    { path: '/students', label: 'Student Management', icon: Users },
-    { path: '/invigilators', label: 'Manage Invigilators', icon: UserCheck },
+    { path: "/", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/draft-plans", label: "Draft Plans", icon: Folder },
+    { path: "/students", label: "Student Management", icon: Users },
+    { path: "/invigilators", label: "Manage Invigilators", icon: UserCheck },
   ];
 
   return (
-    <nav className="bg-gray-50 border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          <div className="flex justify-center flex-1">
-            <div className="flex space-x-8 overflow-x-auto">
+    <nav className="bg-white w-full shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Navigation Links */}
+          <div className="w-full overflow-x-auto">
+            <div className="flex space-x-4 md:space-x-8 min-w-max">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
-                
+
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center gap-2 py-4 px-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                    className={`flex items-center gap-2 py-2 px-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200 ease-in-out ${
                       isActive
-                        ? 'border-red-800 text-red-800'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                        ? "border-red-800 text-red-800"
+                        : "border-transparent text-gray-600 hover:text-red-800 hover:border-red-800"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -46,14 +40,17 @@ const Navigation = () => {
               })}
             </div>
           </div>
-          
-          {!location.pathname.startsWith('/create-exam') && (
-            <Link to="/create-exam">
-              <button className="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded flex items-center gap-2 text-sm font-medium">
-                <Plus className="w-4 h-4" />
-                Create New Exam Plan
-              </button>
-            </Link>
+
+          {/* CTA Button */}
+          {!location.pathname.startsWith("/create-exam") && (
+            <div className="flex justify-start md:justify-end">
+              <Link to="/create-exam">
+                <button className="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-md shadow-sm flex items-center gap-2 text-sm font-medium transition duration-200 ease-in-out whitespace-nowrap">
+                  <Plus className="w-5 h-5" />
+                  Create New Exam Plan
+                </button>
+              </Link>
+            </div>
           )}
         </div>
       </div>
