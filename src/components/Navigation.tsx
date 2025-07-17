@@ -6,10 +6,10 @@ const Navigation = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/draft-plans", label: "Draft Plans", icon: Folder },
     { path: "/students", label: "Student Management", icon: Users },
-    { path: "/invigilators", label: "Manage Invigilators", icon: UserCheck },
+    { path: "/invigilators", label: "Invigilator Management", icon: UserCheck },
   ];
 
   return (
