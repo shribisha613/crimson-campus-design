@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Link } from "react-router-dom";
-import { Search, Filter, Edit, Trash2, Users, MapPin, UserCheck, FileText, Download } from 'lucide-react';
+import { Search, Trash2, Users, MapPin, UserCheck, Download } from 'lucide-react';
 
 const DraftPlans = () => {
   const [searchTerm, setSearchTerm] = useState('');
